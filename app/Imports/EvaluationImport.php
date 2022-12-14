@@ -24,27 +24,65 @@ class EvaluationImport implements ToCollection, WithProgressBar, WithHeadingRow
   use Importable;
   public function collection(Collection $row)
   {
-    $state = new Etudiant();
-    $cours = new Cours();
     // dd(count($row));
     $i = 6;
     $rt = 3;
+    $r = $rt;
     //dd($row[6]);
-    while( $i < count($row)){
+   //block course
+   while($r < 34){
+    if($r == 6){
+      Cours::create([
+        'nom'    => $row[0][6],
+        'ponderation'    => $row[5][6],
+        "annee_promos_id" =>null
+      ]);    
+     }
+     else{
+      Cours::create([
+        'nom'    => $row[0][$r],
+        'ponderation'    => $row[5][$r+2],
+        "annee_promos_id" =>null
+      ]);
+      $r +=2;
+     }
+     $r++;
+   }
+   //endblock
+
+  
+  $cours = new Cours();
+
+      while( $i < count($row)){
+      Etudiant::create([
+        'nom'     => $row[$i][1],
+        'postnom'    => $row[$i][2],
+     ]);
       while($rt < 34){
-   
+       
       if($rt == 6){
+      
+       $state = new Etudiant();
+       $student =  $state->where("nom",$row[$i][1])->where("postnom",$row[$i][2])->first(); 
+       $coursDy =  $cours->where("nom",$row[0][6])->first();     
         Evaluation::create([
+          'annee_promo_etudiants_id'=>$student->id,
+          'cours_id'  =>$coursDy->id,
           'point_annee'    => 0,
           'point_examen'    => $row[$i][6],
           'point_totale'    => $row[$i][6]
         ]);
       }
       else{
+         $coursDy =  $cours->where("nom",$row[0][$rt])->first();     
          $tot=(double)str_replace(",",".",$row[$i][$rt+2]??0);
          $ex=(double)str_replace(",",".",$row[$i][$rt+1]??0);
          $ax=(double)str_replace(",",".",$row[$i][$rt]??0);
-        Evaluation::create([
+         $state = new Etudiant();
+       $student =  $state->where("nom",$row[$i][1])->where("postnom",$row[$i][2])->first(); 
+         Evaluation::create([
+          'annee_promo_etudiants_id'=>$student->id,
+          'cours_id'  =>$coursDy->id,
           'point_annee'    => $ax,
           'point_examen'    => $ex,
           'point_totale'    => (double) $tot
@@ -57,69 +95,7 @@ class EvaluationImport implements ToCollection, WithProgressBar, WithHeadingRow
       $i++;
     }
 
-
-
-
-
-
-
-
-    Cours::create([
-      'nom'    => $row[0][3],
-      'ponderation'    => $row[5][5],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][6],
-      'ponderation'    => $row[5][6],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][7],
-      'ponderation'    => $row[5][9],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][10],
-      'ponderation'    => $row[5][12],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][13],
-      'ponderation'    => $row[5][15],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][16],
-      'ponderation'    => $row[5][18],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][19],
-      'ponderation'    => $row[5][21],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][22],
-      'ponderation'    => $row[5][24],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][25],
-      'ponderation'    => $row[5][27],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][28],
-      'ponderation'    => $row[5][30],
-      'promotions_id' =>null
-    ]);
-    Cours::create([
-      'nom'    => $row[0][31],
-      'ponderation'    => $row[5][33],
-      'promotions_id' =>null
-    ]);
-  }
+      }
 
 
 }

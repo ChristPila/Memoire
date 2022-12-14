@@ -9,13 +9,14 @@ use App\Imports\EvaluationImport;
 use App\Models\AnneePromo;
 use App\Models\AnneePromoEtudiant;
 use App\Models\Cours;
+use App\Models\Evaluation;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EtudiantController extends Controller
 {
     //
     public function reception(Request $request){
-        Excel::import(new EtudiantImport, $request->file('file'));
+       // Excel::import(new EtudiantImport, $request->file('file'));
         Excel::import(new EvaluationImport, $request->file('file'));
         $state = Etudiant::where('promotions_id', null)->get();
         $u = $request->yearac;
@@ -34,11 +35,15 @@ class EtudiantController extends Controller
                 "annee_promos_id"=> $dynamique->id,
                 'etudiants_id' =>$del->id,
               ]);
+            $action = AnneePromoEtudiant::where("annee_promos_id",$dynamique->id)->where('etudiants_id',$del->id)->first();
+            $ev = Evaluation::where('annee_promo_etudiants_id',$del->id)->first();
+            $ev->annee_promo_etudiants_id =  $action->id;
+            $ev->update();
         }
-        $stat = Cours::where('promotions_id', null)->get();
+
+        $stat = Cours::where('annee_promos_id', null)->get();
         foreach ( $stat  as $key) {
-    
-            $key->promotions_id = $request->promotions_id;
+            $key->annee_promos_id = $dynamique->id;
             $key->update();
          }
         return back();

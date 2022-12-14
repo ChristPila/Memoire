@@ -15,7 +15,7 @@ class CreateCoursTable extends Migration
     {
         Schema::create('cours', function (Blueprint $table) {
             $table->id();
-            $table->integer('promotions_id')->nullable();
+            $table->foreignId('annee_promos_id')->nullable();
             $table->string('nom');
             $table->integer('ponderation');
             $table->timestamps();

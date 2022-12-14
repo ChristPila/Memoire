@@ -14,4 +14,12 @@ class PromotionController extends Controller
         $val = Annee::all();
         return view('promotion.Lpta')->with("liste", $value)->with("id",$id)->with("ac",$val);
     }
+
+   
+
+
+
+
+
+
 }

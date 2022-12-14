@@ -13,7 +13,7 @@ class Cours extends Model
 
     protected $fillable = [
         'nom',
-        'promotions_id',
-        'ponderation'
+        'ponderation',
+        "annee_promos_id"
     ];
 }
